@@ -68,6 +68,8 @@ attribute value of ”main”. The main div will have a background image, this m
 image (tetris.png) provided on ELE, set at 95% width of the main container and in a fixed position
 in the centre, vertically and horizonally.
 
+test
+
 */
 
 /*
