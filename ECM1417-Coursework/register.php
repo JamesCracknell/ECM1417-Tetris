@@ -1,7 +1,21 @@
 <!DOCTYPE html>
 <html>
-<body>
+<head>
+    <link rel="stylesheet" href="pagestyle.css">
+    <title> ECM1417 Tetris - Register </Title>
+<style>
+</style>
+</head>
 
+
+<body>
+    <ul class="menu">
+        <li name="home" style="float:left"><a href="index.php">Home</a></li>
+        <li name="tetris" style="float:right"><a href="tetris.php">Play Tetris</a></li>
+        <li name="leaderboard" style="float:right"><a href="leaderboard.php">Leaderboard</a></li>
+    </ul>
+    <div class="main">
+        <!-- Rest of code -->
 <?php
 /*
 The registration webpage will contain a form in a div with a grey (hexcode c7c7c7) background

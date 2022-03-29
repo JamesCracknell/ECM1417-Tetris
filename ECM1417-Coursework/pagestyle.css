@@ -22,18 +22,21 @@ ul.menu li home{
 
 ul.menu li a{
     display: block;
-    width:2cm;
-    height:0.7cm;
+    width: 2cm;
+    height: 0.7cm;
     padding-top: 10px;
     padding-left: 20px;
     color:white;
     text-decoration:none;
 }
 
-body {
-    background-image: url("/res/tetris.png");
+div.main {
+    margin-top: 1cm; /* To seperate from nav bar */
+    height: 93vh; /* Set to 93% of view window. This accounts for nav bar without adding a scroll wheel.  */
+    width: 100%;
+    background-image: url("./res/tetris.png");
     background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: center;
+    background-attachment:fixed;
+    background-position: center center;
     background-size: 95%;
 }
