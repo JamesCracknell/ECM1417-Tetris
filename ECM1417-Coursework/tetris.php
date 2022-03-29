@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="pagestyle.css">
+    <link rel="stylesheet" href="./res/pagestyle.css">
     <title> ECM1417 Tetris - Tetris Game </Title>
 <style>
 </style>

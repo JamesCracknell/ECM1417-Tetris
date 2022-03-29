@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="pagestyle.css">
+    <link rel="stylesheet" href="./res/pagestyle.css">
     <title> ECM1417 Tetris - Register </Title>
     <?php
-/*
-The registration webpage will contain a form in a div with a grey (hexcode c7c7c7) background
-and 5px box-shadow. The form will contain text input fields for ’First Name’, ’Last name’ and
-’Username’; Two password input fields, with placeholders of ’Password’ and ’Confirm password’;
-and finally a radio field with name=”display” and values of ’yes’ or ’no’ for whether to ’Display
-Scores on leaderboard’. The action on submitting the form will be a POST request to index.php.
-*/
-?>
-
+        //require_once "connect.php";
+        // Define Variables
+        $first_name = "";
+        $last_name = "";
+        $username = "";
+        $password = "";
+        $confirm_password = "";
+        $display = "";
+        // post request to index.php
+    ?>
     <style>
     </style>
 </head>
@@ -42,7 +43,9 @@ Scores on leaderboard’. The action on submitting the form will be a POST reque
                 <label for="yes">Yes<label>
                 <input type="radio" id="yes" name="display" value="yes">
                 <label for="no">No<label>
-                <input type="radio" id="no" name="display" value="no">
+                <input type="radio" id="no" name="display" value="no"><br>
+                <br>
+                <!-- after submit send post to index.php-->
             </form>
         </div>
 
