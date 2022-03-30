@@ -3,19 +3,6 @@
 <head>
     <link rel="stylesheet" href="./res/pagestyle.css">
     <title> ECM1417 Tetris - Register </Title>
-    <?php
-        //require_once "connect.php";
-        // Define Variables
-        $first_name = "";
-        $last_name = "";
-        $username = "";
-        $password = "";
-        $confirm_password = "";
-        $display = "";
-        // post request to index.php
-    ?>
-    <style>
-    </style>
 </head>
 
 
@@ -29,11 +16,11 @@
         <!-- Rest of code -->
         <div class="registration-form" style="background-color: #c7c7c7; box-shadow: 5px 5px 5px; align-items: center">
             <h1 id="reg-form-title">User Registration Form</h1>
-            <form action="welcome.php" method="post">
+            <form id= "registration_form" action="index.php" method="post">
                 <label for="firstname">First Name:<label><br>
-                <input type="text" id="firstname" name="firstname"><br>
+                <input type="text" id="firstName" name="firstName"><br>
                 <label for="lastname">Last Name:<label><br>
-                <input type="text" id="lastname" name="lastname"><br><br>
+                <input type="text" id="lastName" name="lastName"><br><br>
                 <label for="username">Username:<label><br>
                 <input type="text" id="username" name="username"><br><br>
                 <label for="password">Password:<label><br>
@@ -44,6 +31,8 @@
                 <input type="radio" id="yes" name="display" value="yes">
                 <label for="no">No<label>
                 <input type="radio" id="no" name="display" value="no"><br>
+                <br>
+                <input type="submit"><br>
                 <br>
                 <!-- after submit send post to index.php-->
             </form>

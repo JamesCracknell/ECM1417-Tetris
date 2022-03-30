@@ -6,11 +6,11 @@ define('PASSWORD', 'testpassword');
 define('DBNAME', 'tetris');
 
 // Attempt to create connection
-$connection = new mysqli(SERVER_NAME, USERNAME, PASSWORD, DBNAME);
+$conn = new mysqli(SERVER_NAME, USERNAME, PASSWORD, DBNAME);
 
 // Check connection
-if ($connection->connect_error) {
-    die('Connection failed: ' . $connection->connect_error);
+if (!$conn) {
+    die('Connection failed: ' . mysqli_connect_error());
 }
 echo('Connected successfully to ' . $servername);
 

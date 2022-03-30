@@ -1,18 +1,36 @@
+<?php session_start(); //start the session ?>
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel='stylesheet' href='./res/pagestyle.css'>
     <title> ECM1417 Tetris - Index </Title>
+    <link rel='stylesheet' href='./res/pagestyle.css'>
     <?php
-    /* PHP User log in */
-?>
-
+    // INSERT INTO Users VALUES (username, firstName, lastName, password, display);
+   
+    require "res/connect.php";
+    //if // data is all valid then
+    if ($_POST['display'] == 'yes'){
+        $should_display = 1; // should display
+    } else {
+        $should_display = 0; // should not display
+    }
+    
+    $sql = "INSERT INTO Users VALUES ('";
+    $sql .= $_POST['username'] . "', '";
+    $sql .= $_POST['firstName'] . "', '";
+    $sql .= $_POST['lastName'] . "', '";
+    $sql .= $_POST['password'] . "', '";
+    $sql .= $should_display . "');";
+    if (mysqli_query($conn, $sql) ) {
+        echo "New task added successfully";
+      } else {
+        echo "Error: ". mysqli_error($conn);
+      }
+    mysqli_close($conn);
+    ?>
 <style>
-
 </style>
 </head>
-
-
 <body>
     <ul class='menu'>
         <li name='home' style='float:left'><a href='index.php'>Home</a></li>
