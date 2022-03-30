@@ -1,8 +1,8 @@
 <?php
 // Log in details set as constants - temporary
 define('SERVER_NAME', 'localhost');
-define('USERNAME', 'root');
-define('PASSWORD', 'testpassword');
+define('USERNAME', 'ecm1417');
+define('PASSWORD', 'WebDev2021');
 define('DBNAME', 'tetris');
 
 // Attempt to create connection
