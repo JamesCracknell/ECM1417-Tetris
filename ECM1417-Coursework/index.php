@@ -16,21 +16,26 @@
     $password = $_POST['password'];
     $confirm_password = $_POST['confirmpassword'];
     $valid_input = true;
+    $in_db_username = "";
 
     // check data valid
     if (!(isset($username) && isset($first_name) && isset($last_name) && isset($password) && isset($confirm_password) && isset($_POST['display']))) {
         $valid_input = false;
-        echo "Not all data has been filled";
+        echo 'Not all data has been filled';
     }
     if (!preg_match('^[a-zA-Z -]*$', $first_name) || !preg_match('^[a-zA-Z -]*$', $last_name)) {
         $valid_input=false;
-        echo "Names must only contain letters, whitespace or -";
+        echo 'Names must only contain letters, whitespace or -';
     }
     if (!($password == $confirm_password)){
         $valid_input=false;
-        echo "Passwords do not match";
+        echo 'Passwords do not match';
     }
-
+    $in_db_username = (mysqli_query($conn, "SELECT * FROM Users WHERE username = '" . $username));
+    if ($in_db_username != "") {
+        $valid_input=false;
+        echo 'Username is not unique';
+    }
 
     if ($_POST['display'] == 'yes'){ //stored as int in database
         $should_display = 1; // should display
@@ -55,7 +60,6 @@
     mysqli_close($conn);
 
     // TODO - if error add button or force try again?
-    // TODO - USERNAME BEING UNIQUE
     // TODO - Appearnace 
     ?>
 <style>
@@ -68,19 +72,26 @@
         <li name='leaderboard' style='float:right'><a href='leaderboard.php'>Leaderboard</a></li>
     </ul>
     <div class='main'>
-        <!-- Rest of code -->
-
-        Welcome to Tetris.
-<!--
-The landing page (index.php) must display the welcome message ’Welcome to Tetris’ if the user is
-logged in followed by a button with the content ’Click here to play’ that contains a hyperlink to the
-tetris.php page. Alternatively, if the user isn’t logged in the landging page should provide a login
-form with input boxes for username and password followed by a paragraph with the content ”Don’t
-have a user account? Register now” where the Register now text has a hyperlink to register.php.
-The username field should have a placeholder of ’username’. The login form or welcome message
-must be in a div with a grey (hexcode c7c7c7) background and 5px box-shadow and the box must
-be centred.
--->
+        <div id='logged_in'> 
+            <!-- if user is logged in -->
+            <!-- if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) { show all -->
+            <h1> Welcome to Tetris </h1>
+            <a href="tetris.php"><button type="button" class="play_button">Click here to play</button></a>
+        </div>
+        <div id='not_logged_in'>
+       <!-- if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) { show none-->
+            <div class='login-form' style='background-color: #c7c7c7; box-shadow: 5px 5px 5px; align-items: center'>
+                <form id='login_form' action='/res/login.php' method='post'>
+                <label for='username'>Username:<label><br>
+                <input type='text' id='username' name='username' placeholder='username'><br>
+                <label for='password'>Password:<label><br>
+                <input type='password' id='password' name='password'><br>
+                <input type='submit' value='Login'><br>    
+                </form>
+                <p> Don't have a user account? <a href = 'register.php'> Register Now </a> </p>
+            
+            </div>
+        </div>
     </div>
 
 </body>

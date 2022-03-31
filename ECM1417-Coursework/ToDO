@@ -6,8 +6,12 @@ Login page submitting
 Should SQL come straight from file
 make ure procedural
 naming conventions
+Testing
+login
+loggout?
+identation
+way to return to login page from register
 
-
-
+' instead of "
 
 Change connect.php to connect to web server
