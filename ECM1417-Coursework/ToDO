@@ -1,16 +1,14 @@
 Should background image go weird full screen?
 DOes box shadow in register work
 Customise title font, customise register page
-make sure procedural
 naming conventions
-Testing
 login
 loggout?
 identation
 session_regenerate_id() ?
 enforce password security? mention username requirements?
-way to return to login page from register
-
-' instead of "
-
-Change connect.php to connect to web server
+    // TODO - if error in register add button or force try again?
+    // TODO - Appearnace 
+    Unique username
+    less gap below register
+Play tetris button
