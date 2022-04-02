@@ -72,14 +72,10 @@
         <li name='leaderboard' style='float:right'><a href='leaderboard.php'>Leaderboard</a></li>
     </ul>
     <div class='main'>
-        <div id='logged_in'> 
-            <!-- if user is logged in -->
-            <!-- if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) { show all -->
-            <h1> Welcome to Tetris </h1>
-            <a href="tetris.php"><button type="button" class="play_button">Click here to play</button></a>
-        </div>
-        <div id='not_logged_in'>
-       <!-- if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) { show none-->
+        <div id='login'>
+            <?php
+                if (!(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true)){
+            ?>  
             <div class='login-form' style='background-color: #c7c7c7; box-shadow: 5px 5px 5px; align-items: center'>
                 <form id='login_form' action='/res/login.php' method='post'>
                 <label for='username'>Username:<label><br>
@@ -89,8 +85,14 @@
                 <input type='submit' value='Login'><br>    
                 </form>
                 <p> Don't have a user account? <a href = 'register.php'> Register Now </a> </p>
-            
             </div>
+            <?php } else { ?>
+                        <!-- if user is logged in -->
+            <!-- if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) { show all -->
+                <h1> Welcome to Tetris </h1>
+            <a href="tetris.php"><button type="button" class="play_button">Click here to play</button></a>
+            <php } ?>
+            
         </div>
     </div>
 

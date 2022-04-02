@@ -1,15 +1,14 @@
 Should background image go weird full screen?
 DOes box shadow in register work
 Customise title font, customise register page
-Index.php different depending on if logged in or not
-Login page submitting
-Should SQL come straight from file
-make ure procedural
+make sure procedural
 naming conventions
 Testing
 login
 loggout?
 identation
+session_regenerate_id() ?
+enforce password security? mention username requirements?
 way to return to login page from register
 
 ' instead of "
