@@ -26,11 +26,15 @@
     #O {background-color: #ffff00;}
     #I {background-color: #00ffff;}
 
+    div.piece{
+        position: absolute;
+    }
     div.block {
         position: absolute;
         width: 30px;
         height: 30px;
     }
+
 </style>
 </head>
 
@@ -100,7 +104,8 @@
      */
 
     // define variables
-    var gamePieces = { // associative array of game pieces NOTE THIS FOLLOWS THE SPEC NOT TETRIS
+    const gamePieces = { // associative array of game pieces
+        // note this follows the given spec
         'L' : [[1,1],[1,2],[1,3],[2,3]], //orange
         'Z' : [[1,1],[2,1],[2,2],[2,3]], //red
         'S' : [[1,2],[2,1],[2,2],[3,1]], //green
@@ -109,15 +114,45 @@
         'I' : [[1,1],[1,2],[1,3],[1,4]] //cyan
     }
 
+    const gamePiecesAdjusted = {
+        'L' : [[0,0],[0,1],[0,2],[1,2]], //orange
+        'Z' : [[0,0],[1,0],[1,1],[1,2]], //red
+        'S' : [[0,1],[1,0],[1,1],[2,0]], //green
+        'T' : [[0,0],[1,0],[1,1],[2,0]], //purple
+        'O' : [[0,0],[0,1],[1,0],[1,1]], //yellow
+        'I' : [[0,0],[0,1],[0,2],[0,3]] //cyan 
+    }
     var gamePieceNames = ['L', 'Z', 'S', 'T', 'O', 'I'];
-    var tetrisGrid = new Array(10) ;// 2D array for tetris grid
     var currentPieceID = 0;
-    for (var i = 0; i < tetrisGrid.length; i++) {
-        tetrisGrid[i] = new Array(3);
+    var tetrisGrid = new Array(10) ;// 2D array for tetris grid
+    for (var i = 0; i < tetrisGrid.length; i++) { // column x row
+        tetrisGrid[i] = new Array(20);
     }
     var currentBlock; // holds the currently playing game piece
-
+    var currentCoords = new Array(4); // holds the current coordinates
+    for (var i = 0; i < 4; i++) {
+        currentCoords[i] = new Array(2);
+    }
+    var downInterval //timer
+    var userScore
     // main code
+
+    document.addEventListener('keydown', logKey);
+    
+    function logKey(e){
+        // detects if a keypress is made
+        switch(e.code) {
+            case 'ArrowLeft':
+                moveBlock('left');
+                break;
+            case 'ArrowRight':
+                moveBlock('right');
+                break;
+            case 'ArrowDown':
+                moveBlock('down');
+                break;
+        } 
+    }       
 
     function setUpPage(){ // starts on load
         var startButton = document.createElement('button')
@@ -136,9 +171,9 @@
     }
 
     function playTile(){
+        userScore +=1 //add one point to score
+        clearInterval(downInterval); 
         currentBlock = getNextBlockID();
-        alert("test")
-        alert("the piece is: " + currentBlock)
         currentPieceID+=1
         for (var i = 0; i < 4; i++) { // check if starting space is emptys
             if (checkIfEmpty(getStartingBlockCoords(currentBlock)[i])){
@@ -150,8 +185,10 @@
         }
         var tetrisPiece = document.createElement('div') // group of blocks makes piece.
         tetrisPiece.setAttribute('class', 'tetris-piece')
+        tetrisPiece.setAttribute('id', currentPieceID)
         document.getElementById('game').appendChild(tetrisPiece);
         createBlock(currentBlock, tetrisPiece)
+        downInterval = setInterval(moveDown, 1000) //if 1s goes by, moves piece down automatically
     }
 
     function getNextBlockID(){ //gets next game piece ID, either when game starts or previous peice finishes
@@ -160,9 +197,9 @@
 
     function getStartingBlockCoords(nextBlockID){
         var currentBlockCoords
-        for (var key in gamePieces) {
+        for (var key in gamePiecesAdjusted) {
             if (key == nextBlockID) {
-                currentBlockCoords = gamePieces[key];
+                currentBlockCoords = gamePiecesAdjusted[key]; //-1 to 0 index
             }
         }
         return currentBlockCoords;
@@ -179,19 +216,81 @@
 
     function createBlock(blockID, piece){
         for (var i = 0; i < 4; i++) {
+            // to do test
+            tetrisGrid[getStartingBlockCoords(blockID)[i][0]][getStartingBlockCoords(blockID)[i][1]]=currentBlock;
+            // end of to do
             var block = document.createElement('div');
             block.setAttribute('class', 'block');
             block.setAttribute('id', blockID);
-            block.setAttribute('pieceID', currentPieceID);
-            var horizontalPosition = getStartingBlockCoords(blockID)[i][0] * 30;
-            block.style.left = horizontalPosition + "px";
-            var verticalPosition = getStartingBlockCoords(blockID)[i][1] * 30;
-            block.style.bottom = verticalPosition + "px";
+            var horizontalPosition = 263;
+            block.style.left = horizontalPosition + 'px';
+            var verticalPosition = 643;
+            block.style.bottom = verticalPosition + 'px';
+            block.style.transform = 'translate('+(30*getStartingBlockCoords(blockID)[i][0]-30)+'px, '+(30*getStartingBlockCoords(blockID)[i][1]-30)+'px)';
+            currentCoords[i][0]=getStartingBlockCoords(blockID)[i][0];
+            currentCoords[i][1]=getStartingBlockCoords(blockID)[i][1];
             piece.appendChild(block);
-            alert("child added");
         }
     }
 
+    function moveBlock(direction){ // moves block based on user input
+        var xtranslation = 0 //left = -1
+        var ytranslation = 0 //down = +1
+        switch(direction){
+            case 'left':
+                xtranslation = -1;
+                break;
+            case 'right':
+                xtranslation = 1;
+                break;
+            case 'down':
+                clearInterval(downInterval); //reset downInterval
+                downInterval = setInterval(moveDown, 1000)
+                ytranslation = 1;
+                break;
+        }
+        if (!(checkObstructions(xtranslation, ytranslation))) { //no obstructions
+            for (var j = 0; j < 4; j++) { tetrisGrid[currentCoords[j][0]][currentCoords[j][1]] = null; } //clear current piece from grid
+            for (var i = 0; i < 4; i++) { //update grid
+                currentCoords[i][0] += xtranslation;
+                currentCoords[i][1] += ytranslation;
+                var currentPiece = document.getElementById(currentPieceID);
+                var blockToMove = currentPiece.children[i];
+                blockToMove.style.transform = 'translate('+(30*currentCoords[i][0]-30)+'px, '+(30*currentCoords[i][1]-30)+'px)';
+                tetrisGrid[currentCoords[i][0]][currentCoords[i][1]] = currentBlock; //place piece in new place
+            }
+        }
+    }
+
+    function checkObstructions(xtranslation, ytranslation){ //check if move is valid
+        // if out of bounds
+        var obstructed = false;
+        for (var i = 0; i < 4; i++) {
+            if (!(((currentCoords[i][0] + xtranslation) < 0) || ((currentCoords[i][0] + xtranslation) > 9) || (currentCoords[i][1] + ytranslation) > 19)) {
+                // if spot to move to is empty
+                for (var j = 0; j < 4; j++) { tetrisGrid[currentCoords[j][0]][currentCoords[j][1]] = null; } //clear current piece from grid
+                if ((tetrisGrid[currentCoords[i][0] + xtranslation][currentCoords[i][1] + ytranslation]!= null)) { // TO DO TEST WITH OTHER PIECES
+                    obstructed = true;
+                    if (([currentCoords[i][1] + ytranslation]!= null)){ //it has hit a piece
+                        for (var j = 0; j < 4; j++) { tetrisGrid[currentCoords[j][0]][currentCoords[j][1]] = currentBlock; } //replace block
+                        playTile()
+                    }
+                }
+                for (var j = 0; j < 4; j++) { tetrisGrid[currentCoords[j][0]][currentCoords[j][1]] = currentBlock; } //return current piece to grid
+                
+            } else {  
+                obstructed = true;
+                if ((currentCoords[i][1] + ytranslation) > 19){ //bottom of grid
+                    playTile()
+                }
+            }
+        }
+        return obstructed;
+    }
+
+    function moveDown(){ //move down when 1 second has passed
+        moveBlock('down');
+    }
 </script>
 
 </body>
