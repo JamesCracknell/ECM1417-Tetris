@@ -7,8 +7,7 @@ loggout?
 identation
 session_regenerate_id() ?
 enforce password security? mention username requirements?
-    // TODO - if error in register add button or force try again?
+
     // TODO - Appearnace 
-    Unique username
-    less gap below register
-Play tetris button
+
+Play tetris button 

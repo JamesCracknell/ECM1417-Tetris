@@ -56,9 +56,12 @@
                 }
                 mysqli_close($conn);
             } else { // if username is not unique
-                echo "<script type='text/javascript'>alert('Username must be unique.');</script>";
+                echo("Username is not unique");
                 header('Location: register.php');
             }
+        } else {
+            echo("Invalid data");
+            header('Location: register.php');
         }
     }
     ?>
