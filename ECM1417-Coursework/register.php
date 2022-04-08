@@ -34,7 +34,6 @@
                 <br>
                 <input type='submit'value='Register'><br>
                 <label style='font-size: 14px'> Already have an account? <a href = 'index.php'> Login here</a>.</label>
-                <!-- after submit send post to index.php-->
             </form>
         </div>
 </body>

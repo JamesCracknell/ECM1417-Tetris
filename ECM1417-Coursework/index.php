@@ -1,12 +1,12 @@
 <?php session_start(); //start the session ?>
+<?php //session_destroy();?>
 <!DOCTYPE html>
 <html>
 <head>
     <title> ECM1417 Tetris - Index </Title>
     <link rel='stylesheet' href='./res/pagestyle.css'>
     <?php
-    // INSERT INTO Users VALUES (username, firstName, lastName, password, display);
-       
+    // INSERT INTO Users VALUES (username, firstName, lastName, password, display);  
     // get data
     $username = $_POST['username'];
     $first_name = $_POST['firstName'];
@@ -15,7 +15,7 @@
     $confirm_password = $_POST['confirmpassword'];
     $valid_input = true;
     $in_db_username = "";
-
+    
     // check data valid
     if (isset($username) && isset($first_name) && isset($last_name) && isset($password) && isset($confirm_password) && isset($_POST['display'])) {
         if (!preg_match('^[a-zA-Z -]*$', $first_name) || !preg_match('^[a-zA-Z -]*$', $last_name)) {
@@ -75,15 +75,14 @@
         <li name='leaderboard' style='float:right'><a href='leaderboard.php'>Leaderboard</a></li>
     </ul>
     <div class='main'>
-        <div id='login'>
+        <div id='login' style='background-color: #c7c7c7; box-shadow: 5px 5px 5px; align-items: center; width : 500px; margin: auto;'>
             <?php if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] == true)){ ?>  
-                <?php $_SESSION['username'] = $username?>
                 <!-- if user is logged in -->
                 <h1> Welcome to Tetris </h1>
                 <a href='tetris.php'><button type='button' class='play_button'>Click here to play</button></a>
             <?php } else { ?>
                 <!-- if user is not logged in -->
-                <div class='login-form' style='background-color: #c7c7c7; box-shadow: 5px 5px 5px; align-items: center'>
+                <div class='login-form' >
                 <form id='login_form' action='res/login.php' method='post'>
                     <label for='username'>Username:</label><br>
                     <input type='text' id='username' name='username' placeholder='username'><br>

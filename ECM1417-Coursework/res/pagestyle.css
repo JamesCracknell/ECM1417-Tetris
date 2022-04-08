@@ -32,11 +32,11 @@ ul.menu li a{
 
 div.main {
     margin-top: 1cm; /* To seperate from nav bar */
-    height: 93vh; /* Set to 93% of view window. This accounts for nav bar without adding a scroll wheel.  */
-    width: 100%;
+    height: 95vh;
+    position: fixed;
     background-image: url('tetris.png');
     background-repeat: no-repeat;
     background-attachment:fixed;
     background-position: center center;
-    background-size: 95%;
+    background-size: 95% 100%;
 }

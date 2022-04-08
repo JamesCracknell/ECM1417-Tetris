@@ -26,10 +26,32 @@
     #O {background-color: #ffff00;}
     #I {background-color: #00ffff;}
 
+    #game{
+        background-color: #c7c7c7;
+        box-shadow: 5px 5px 5px;
+        background-position: center center;
+        size: auto;
+        margin: 0 auto;
+        margin-top: 50px;
+        width: 400px;
+        height: 650px;
+    }
+    #tetris-bg{
+        background-image: url("./res/tetris-grid-bg.png");
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center center;
+        size: auto;
+        margin:auto;
+        width: 95%;
+        height: 700px;
+    }
     div.piece{
         position: absolute;
     }
     div.block {
+        left: 41.6vw;
+        top: 6vw;
         position: absolute;
         width: 30px;
         height: 30px;
@@ -47,61 +69,12 @@
     </ul>
     <div class='main'>
         <!-- Rest of code -->
-        <div id='game' style='background-color: #c7c7c7; box-shadow: 5px 5px 5px; margin: auto; width: 400px; height: 700px;'>
-            <div id='tetris-bg' style='background-image: url("./res/tetris-grid-bg.png"); background-repeat: no-repeat; background-attachment: fixed;
-                background-position: center center; width: 400px; height: 700px;'> </div>
+        <div id='game'>
+            <div id='tetris-bg'></div>
         </div>
     </div>
 
 <script>
-    /* - Starts when "start the game" button clicked
-     - new piece appears (score incremented by one) at top at start of game
-     or when previous piece touches bottom of board of other block.
-     - game stops when piece touches top of board
-     - left and right arrow used to control as it falls
-
-            blocks
-     - pieces are square block div elements with class set to block
-     - block id gives background colour of piece
-     - tetris background must align with blocks
-    
-            data structures
-     - 10x20 2D array of strings for grid
-            - each string starts empty
-            - string then comtrains id of div in that position
-     - associative array for shape of game pieces
-            - keys will be id of div variables
-            - values will contain coordinates of squares that make up relevent type of game pieve
-                • ”L” => [ [1,1],[1,2],[1,3],[2,3] ]
-                • ”Z” => [ [1,1],[2,1],[2,2],[2,3] ]
-                • ”S” => [ [1,2],[2,1],[2,2],[3,1] ]
-                • ”T” => [ [1,1],[2,1],[2,2],[3,1] ]
-                • ”O” => [ [1,1],[1,2],[2,1],[2,2] ]
-                • ”I” => [ [1,1],[1,2],[1,3],[1,4] ]
-    
-            game
-     - randomly select piece and assign variable currentBlock to it
-     - check if start coordianates for currentblock at top of grid are empty
-            if any are not empty, game end and submit current points in post rquest to leaderboard.php
-            if all relevent are empty, coordinates on sgrid should be updates with letter of game piece defined by key of current block
-     - "block" div elements should be created on webpage to display addition of currentBlock to top of grid
-     - if left or right arrow key pressef then block should be moved within bounds of grid and without overlapping
-     update block div elemtns using translate(x,y) css attributes
-     - after one sec or when down key pressed
-            - check if coordinates below currentBlock are occupied
-            - if empty
-                - move down cooridnates of current block by one on vertical axis, update div elements position
-            - if not empty
-                - div blocks should be set with div position attribute
-                - program should check if any row is complete
-                    - if so remove the row and move down all rows above
-                        - mopve down in array, reposition block divs to show update positomns
-    - return to step 1
-    
-    # maybe add music.
-
-
-     */
 
     // define variables
     const gamePieces = { // associative array of game pieces
@@ -134,7 +107,8 @@
         currentCoords[i] = new Array(2);
     }
     var downInterval //timer
-    var userScore
+    var userScore = 0
+    var gameOver = false
     // main code
 
     document.addEventListener('keydown', logKey);
@@ -149,6 +123,7 @@
                 moveBlock('right');
                 break;
             case 'ArrowDown':
+                <?php "Hello I am a test" ?>
                 moveBlock('down');
                 break;
         } 
@@ -171,24 +146,26 @@
     }
 
     function playTile(){
-        userScore +=1 //add one point to score
-        clearInterval(downInterval); 
-        currentBlock = getNextBlockID();
-        currentPieceID+=1;
-        for (var i = 0; i < 4; i++) { // check if starting space is emptys
-            if (checkIfEmpty(getStartingBlockCoords(currentBlock)[i])){
-                // the space is not clear
-                // TODO
-                //  game should end and the current points submitted to the server in a post request to leaderboard.php
-                alert("game should end now")
+        if (!gameOver){
+            userScore +=1 //add one point to score
+            clearInterval(downInterval); 
+            currentBlock = getNextBlockID();
+            currentPieceID+=1;
+            for (var i = 0; i < 4; i++) { // check if starting space is emptys
+                if (checkIfEmpty(getStartingBlockCoords(currentBlock)[i]) && !gameOver){
+                    gameOver = true;
+                    clearInterval(downInterval); //reset downInterval
+                    postLeaderboardScore(); //game ended
+                }
             }
+            var tetrisPiece = document.createElement('div') // group of blocks makes piece.
+            tetrisPiece.setAttribute('class', 'tetris-piece')
+            tetrisPiece.setAttribute('id', currentPieceID)
+            document.getElementById('game').appendChild(tetrisPiece);
+            createBlock(currentBlock, tetrisPiece)
+            downInterval = setInterval(moveDown, 1000) //if 1s goes by, moves piece down automatically
         }
-        var tetrisPiece = document.createElement('div') // group of blocks makes piece.
-        tetrisPiece.setAttribute('class', 'tetris-piece')
-        tetrisPiece.setAttribute('id', currentPieceID)
-        document.getElementById('game').appendChild(tetrisPiece);
-        createBlock(currentBlock, tetrisPiece)
-        downInterval = setInterval(moveDown, 1000) //if 1s goes by, moves piece down automatically
+
     }
 
     function getNextBlockID(){ //gets next game piece ID, either when game starts or previous peice finishes
@@ -220,10 +197,10 @@
             var block = document.createElement('div');
             block.setAttribute('class', "block " + "C"+getStartingBlockCoords(blockID)[i][0]+"R"+getStartingBlockCoords(blockID)[i][1]);
             block.setAttribute('id', blockID); //this is the colour
-            var horizontalPosition = 263;
-            block.style.left = horizontalPosition + 'px';
-            var verticalPosition = 643;
-            block.style.bottom = verticalPosition + 'px';
+            //var horizontalPosition = 263;
+            //block.style.left = horizontalPosition + 'px';
+            //var verticalPosition = 643;
+            //block.style.bottom = verticalPosition + 'px';
             block.style.transform = 'translate('+(30*getStartingBlockCoords(blockID)[i][0]-30)+'px, '+(30*getStartingBlockCoords(blockID)[i][1]-30)+'px)';
             currentCoords[i][0]=getStartingBlockCoords(blockID)[i][0];
             currentCoords[i][1]=getStartingBlockCoords(blockID)[i][1];
@@ -303,7 +280,6 @@
                 }
             }
             if (rowComplete == true){
-                alert("row complete")
                 emptyRow(j);
                 break;
             }
@@ -313,11 +289,9 @@
     function emptyRow(rowToEmpty){
         for (var i = 0; i < 20; i++){
             if (i = rowToEmpty){
-                alert("removing a row: " + rowToEmpty)
                 for (var j = 0; j < 10; j++){
                     tetrisGrid[j][i] = null //empty the row in the grid
                     blockToRemove = ('class', 'block ' + 'C'+j+'R'+i);
-                    alert(blockToRemove)
                     document.getElementsByClassName(blockToRemove)[0].remove();
                 }
                 startNumber = i-1
@@ -342,10 +316,13 @@
     }
 
     function postLeaderboardScore(){
+        alert("Game over.") 
         var request = new XMLHttpRequest();
-        request.open('POST', 'leaderboard.php', true);
+        request.open('POST', 'leaderboard.php');
         request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        request.send('score'+userScore);
+        alert(userScore)
+        dataToSend = "score="+userScore;
+        request.send(dataToSend);       
     }
 
 </script>

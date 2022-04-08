@@ -14,6 +14,7 @@
         $row = mysqli_fetch_assoc($return);
         if ($row['Password'] = $password) {
             $_SESSION['loggedIn'] = true;
+            $_SESSION['username'] = $username;
             echo("Logged in successfully");
         } else {
             echo("Incorrect password");

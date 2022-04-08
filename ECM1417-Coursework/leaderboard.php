@@ -4,6 +4,21 @@
 <head>
     <link rel='stylesheet' href='./res/pagestyle.css'>
     <title> ECM1417 Tetris - Leaderboard </Title>
+
+    <?php  
+        if (isset($_POST['score'])){
+            require 'res/connect.php';
+            $score = $_POST['score'];
+            $sql = 'INSERT INTO Scores (UserName, Score) VALUES ("' . $_SESSION['username'] . '", "' . $score .'");';
+            if (mysqli_query($conn, $sql) ) {
+                echo "Scores added to database successfully";
+            } else { 
+                echo "Error: ". mysqli_error($conn);
+            }
+            mysqli_close($conn);
+        }
+    ?>
+    
 <style>
     div.tableDiv {
         display: block;
@@ -33,48 +48,15 @@
     }
 </style>
 </head>
-
-
 <body>
-    <?php
-        require 'connect.php';
-        if (isset($_POST['score'])){
-            $sql = 'INSERT INTO Scores VALUES ("' . $_SESSION['username'].'","'.$_POST['score'].'");';
-            if (mysqli_query($conn, $sql) ) {
-                echo "Scores added to database successfully";
-            } else { 
-                echo "Error: ". mysqli_error($conn);
-            }
-            mysqli_close($conn);
-        }
-        require 'connect.php';
-        $sql = 'SELECT * FROM Scores;';
-        $return = mysqli_query($conn, $sql);
-        if (mysqli_num_rows($return) > 0) { //there is data in table
-            $row = mysqli_fetch_array($result)
-
-        }
-        mysqli_close($conn);
-
-        //get dispaly
-        $sql = 'SELECT username, display FROM Users;';
-        $return = mysqli_query($conn, $sql);
-        if (mysqli_num_rows($return) > 0) { //there is data in table
-            $row = mysqli_fetch_array($result)
-            
-        }
-        mysqli_close($conn);
-
-    ?>
     <ul class='menu'>
         <li name='home' style='float:left'><a href='index.php'>Home</a></li>
         <li name='tetris' style='float:right'><a href='tetris.php'>Play Tetris</a></li>
         <li name='leaderboard' style='float:right'><a href='leaderboard.php'>Leaderboard</a></li>
     </ul>
     <div class='main'>
-        <div class='tableDiv'>
-        <h1> Leaderboard Table </h1>    
-        <table>
+        <div class='tableDiv'>  
+            <table>
                 <thead>
                     <tr>
                         <th> Username </th>
@@ -82,16 +64,40 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td> test </td>
-                        <td> test2 </td>
-                    </tr>
-                    <tr>
-                        <td> test3 </td>
-                        <td> test4 </td>
-                    </tr>
-                </tbody>
-            </table>
+                    <h1> Leaderboard Table </h1> 
+                    <?php
+                    //get display
+                    require 'res/connect.php';   
+                    $sql = 'SELECT UserName, Display FROM Users;';
+                    $return = mysqli_query($conn, $sql);
+                    $usersArray = array();
+                    $scoresArray = array();
+                    if (mysqli_num_rows($return) > 0) { //there is data in table
+                        $row = mysqli_fetch_array($return);
+                        if ($row['Display'] = 1){
+                            array_push($usersArray,$row['UserName']); //array of users who want scores displayed
+                        }
+                    } else {
+                        echo("No data");
+                    }
+
+                    $sql = 'SELECT * FROM Scores;';
+                    $return = mysqli_query($conn, $sql);
+                    if (mysqli_num_rows($return) > 0) { //there is data in table
+                        while ($row = mysqli_fetch_array($return)) {
+                            foreach ($usersArray as $users){
+                                if ($users = $row['Username']){// data should be displayed
+                                    echo("<tr>");
+                                    echo "<td>" . $users . "</td>";
+                                    echo "<td>" . $row['Score'] . "</td>";
+                                    echo("</tr>");
+                                }
+                            }
+                        }
+                    }
+                    echo"</table>";
+                    mysqli_close($conn);
+                    ?>   
         </div>
     </div>
 </body>
