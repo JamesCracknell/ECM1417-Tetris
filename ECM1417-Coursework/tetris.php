@@ -106,9 +106,14 @@
     for (var i = 0; i < 4; i++) {
         currentCoords[i] = new Array(2);
     }
-    var downInterval //timer
-    var userScore = 0
-    var gameOver = false
+    var downInterval; //timer
+    var userScore = 0;
+    var gameOver = false;
+
+        // music
+    var backingMusic = new Audio('res/tetris.mp3');
+    backingMusic.play();
+    backingMusic.loop = true;
     // main code
 
     document.addEventListener('keydown', logKey);
@@ -142,7 +147,6 @@
         document.getElementById('startButton').remove();
         // select new game piece
         playTile();
-        
     }
 
     function playTile(){
@@ -154,6 +158,7 @@
             for (var i = 0; i < 4; i++) { // check if starting space is emptys
                 if (checkIfEmpty(getStartingBlockCoords(currentBlock)[i]) && !gameOver){
                     gameOver = true;
+                    backingMusic.pause(); //pause audio
                     clearInterval(downInterval); //reset downInterval
                     postLeaderboardScore(); //game ended
                 }
@@ -320,7 +325,6 @@
         var request = new XMLHttpRequest();
         request.open('POST', 'leaderboard.php');
         request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        alert(userScore)
         dataToSend = "score="+userScore;
         request.send(dataToSend);       
     }
