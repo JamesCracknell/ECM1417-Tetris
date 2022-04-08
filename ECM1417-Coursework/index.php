@@ -77,6 +77,7 @@
     <div class='main'>
         <div id='login'>
             <?php if (isset($_SESSION['loggedIn']) && ($_SESSION['loggedIn'] == true)){ ?>  
+                <?php $_SESSION['username'] = $username?>
                 <!-- if user is logged in -->
                 <h1> Welcome to Tetris </h1>
                 <a href='tetris.php'><button type='button' class='play_button'>Click here to play</button></a>

@@ -11,3 +11,12 @@ enforce password security? mention username requirements?
     // TODO - Appearnace 
 
 Play tetris button 
+
+
+;s
+Appearnace
+is random actually working
+pieces stop falling when the side touches another blocks side (if pushed into)
+board adjusts to page size.
+formatting of background
+something breaks when one row removed (assinging wrong name?)

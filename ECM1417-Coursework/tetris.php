@@ -174,7 +174,7 @@
         userScore +=1 //add one point to score
         clearInterval(downInterval); 
         currentBlock = getNextBlockID();
-        currentPieceID+=1
+        currentPieceID+=1;
         for (var i = 0; i < 4; i++) { // check if starting space is emptys
             if (checkIfEmpty(getStartingBlockCoords(currentBlock)[i])){
                 // the space is not clear
@@ -216,12 +216,10 @@
 
     function createBlock(blockID, piece){
         for (var i = 0; i < 4; i++) {
-            // to do test
             tetrisGrid[getStartingBlockCoords(blockID)[i][0]][getStartingBlockCoords(blockID)[i][1]]=currentBlock;
-            // end of to do
             var block = document.createElement('div');
-            block.setAttribute('class', 'block');
-            block.setAttribute('id', blockID);
+            block.setAttribute('class', "block " + "C"+getStartingBlockCoords(blockID)[i][0]+"R"+getStartingBlockCoords(blockID)[i][1]);
+            block.setAttribute('id', blockID); //this is the colour
             var horizontalPosition = 263;
             block.style.left = horizontalPosition + 'px';
             var verticalPosition = 643;
@@ -256,6 +254,7 @@
                 currentCoords[i][1] += ytranslation;
                 var currentPiece = document.getElementById(currentPieceID);
                 var blockToMove = currentPiece.children[i];
+                blockToMove.setAttribute('class', "block " + "C"+currentCoords[i][0]+"R"+currentCoords[i][1]);
                 blockToMove.style.transform = 'translate('+(30*currentCoords[i][0]-30)+'px, '+(30*currentCoords[i][1]-30)+'px)';
                 tetrisGrid[currentCoords[i][0]][currentCoords[i][1]] = currentBlock; //place piece in new place
             }
@@ -269,10 +268,11 @@
             if (!(((currentCoords[i][0] + xtranslation) < 0) || ((currentCoords[i][0] + xtranslation) > 9) || (currentCoords[i][1] + ytranslation) > 19)) {
                 // if spot to move to is empty
                 for (var j = 0; j < 4; j++) { tetrisGrid[currentCoords[j][0]][currentCoords[j][1]] = null; } //clear current piece from grid
-                if ((tetrisGrid[currentCoords[i][0] + xtranslation][currentCoords[i][1] + ytranslation]!= null)) { // TO DO TEST WITH OTHER PIECES
+                if ((tetrisGrid[currentCoords[i][0] + xtranslation][currentCoords[i][1] + ytranslation]!= null)) {
                     obstructed = true;
                     if (([currentCoords[i][1] + ytranslation]!= null)){ //it has hit a piece
                         for (var j = 0; j < 4; j++) { tetrisGrid[currentCoords[j][0]][currentCoords[j][1]] = currentBlock; } //replace block
+                        rowComplete(); // check if a row is complete
                         playTile()
                     }
                 }
@@ -281,6 +281,7 @@
             } else {  
                 obstructed = true;
                 if ((currentCoords[i][1] + ytranslation) > 19){ //bottom of grid
+                    rowComplete(); // check if a row is complete
                     playTile()
                 }
             }
@@ -291,6 +292,62 @@
     function moveDown(){ //move down when 1 second has passed
         moveBlock('down');
     }
+
+    function rowComplete(){ //checks if a row in the grid is complete
+        var rowComplete;
+        for (var j = 0; j < 20; j++){ //for row
+            rowComplete=true;
+            for (var i = 0; i < 10; i++){ //for column
+                if(tetrisGrid[i][j] == null){ //if a square is empty
+                    rowComplete = false;
+                }
+            }
+            if (rowComplete == true){
+                alert("row complete")
+                emptyRow(j);
+                break;
+            }
+        }
+    } 
+
+    function emptyRow(rowToEmpty){
+        for (var i = 0; i < 20; i++){
+            if (i = rowToEmpty){
+                alert("removing a row: " + rowToEmpty)
+                for (var j = 0; j < 10; j++){
+                    tetrisGrid[j][i] = null //empty the row in the grid
+                    blockToRemove = ('class', 'block ' + 'C'+j+'R'+i);
+                    alert(blockToRemove)
+                    document.getElementsByClassName(blockToRemove)[0].remove();
+                }
+                startNumber = i-1
+                for (var k = startNumber; k > 0; k--){ // loop through all rows above
+                    for (var j = 0; j < 10; j++){
+                        if (tetrisGrid[j][k] != null){ // if element has something in it
+                            tetrisGrid[j][k+1] = tetrisGrid[j][k] // move down
+                            tetrisGrid[j][k] = null //empty the row in the grid
+                            blockName = ('class', 'block ' + 'C'+j+'R'+k);
+                            var blockToMove = document.getElementsByClassName(blockName)[0];
+                            blockToMove.setAttribute('class', 'block ' + 'C'+j+'R'+k+1);
+                            blockToMove.style.transform = 'translate('+(30*j-30)+'px, '+(30*(k+1)-30)+'px)';
+                        } 
+
+                    }
+                }
+                rowComplete() //re-call to check for other rows
+                break;
+            }
+
+        }
+    }
+
+    function postLeaderboardScore(){
+        var request = new XMLHttpRequest();
+        request.open('POST', 'leaderboard.php', true);
+        request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        request.send('score'+userScore);
+    }
+
 </script>
 
 </body>
